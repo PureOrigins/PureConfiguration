@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "configuration",
+  "version": "${version}",
+  "name": "Configuration",
+  "description": "Configuration utilities",
+  "authors": ["AgeOfWar", "ekardnamm"],
+  "contact": {
+    "homepage": "https://github.com/PureOrigins/Configuration",
+    "issues": "https://github.com/PureOrigins/Configuration/issues",
+    "sources": "https://github.com/PureOrigins/Configuration"
+  },
+  "license": "GNU Lesser General Public License version 3 (LGPLv3)",
+  "icon": "assets/configuration/icon.png",
+  "environment": "*",
+  "depends": {
+    "fabricloader": ">=0.11.6",
+    "fabric": "*",
+    "fabric-language-kotlin": ">=1.6.3+kotlin.1.5.21",
+    "minecraft": "1.17.x",
+    "java": ">=16"
+  }
+}
