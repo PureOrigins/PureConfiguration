@@ -7,7 +7,7 @@ on:
     branches: [master]
 
 jobs:
-  build-and-publish-bins:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Chekout repository
@@ -36,7 +36,7 @@ jobs:
         run: |
           rm -f ~/.gradle/caches/modules-2/modules-2.lock
           rm -f ~/.gradle/caches/modules-2/gc.properties
-      - name: Publish artifacts
+      - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
           path: build/libs
