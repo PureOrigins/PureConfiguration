@@ -3,7 +3,7 @@ name: Build and publish binaries on GitHub
 on:
   push:
     tags:
-      - *
+      - '*'
 
 jobs:
   build-and-publish-bins:
