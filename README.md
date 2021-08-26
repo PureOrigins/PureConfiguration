@@ -2,17 +2,27 @@
 
 Handle PureOrigins mod configuration files in JSON. Example usage
 ```kotlin
-fun main() {
-  val (setting1, setting2, setting3) = json.readJsonFileAs(configFile("settings.json"), Config())
-  // reads config file in the config folder if exists, otherwise it is created
- 
-  // enjoy
+fun main() { 
+    val (setting1, setting2, setting3, setting4) = json.readJsonFileAs(configFile("settings.json"), Config()) 
+    // reads config file in the config folder if exists, otherwise it is created
+    
+    val message = setting4.template("users" to listOf(User("AgeOfWar", 5), User("ekardnamm", 3)))
+    println(message)
+    // Users:
+    // AgeOfWar - 5
+    // ekardnamm - 3
 }
  
 @Serializable
 data class Config(
-  val setting1: Int = 0,
-  val setting2: List<String> = listOf("abc")
-  val setting3: String? = null
+    val setting1: Int = 0, 
+    val setting2: List<String> = listOf("abc", "def"), 
+    val setting3: String? = null, 
+    val setting4: String = "Users:\n<#list users as user>\${user.name} - \${user.points}<#sep>\n</#list>"
+)
+
+data class User(
+    val name: String,
+    val points: String
 )
 ```
