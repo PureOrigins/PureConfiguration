@@ -1,9 +1,10 @@
-name: Build and publish binaries on GitHub
+name: Build and upload artifacts on GitHub
 
 on:
   push:
-    tags:
-      - '*'
+    branches: [master]
+  pull_request:
+    branches: [master]
 
 jobs:
   build-and-publish-bins:
