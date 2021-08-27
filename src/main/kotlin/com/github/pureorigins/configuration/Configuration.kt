@@ -9,11 +9,11 @@ import java.nio.file.Path
 import kotlin.io.path.*
 import kotlin.reflect.typeOf
 
-val json = Json {
+val compactJson = Json {
     ignoreUnknownKeys = true
 }
 
-val prettyPrintJson = Json(json) {
+val json = Json(compactJson) {
     prettyPrint = true
 }
 
