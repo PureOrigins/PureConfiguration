@@ -2,6 +2,7 @@ plugins {
     id("fabric-loom")
     val kotlinVersion: String by System.getProperties()
     kotlin("jvm").version(kotlinVersion)
+    `maven-publish`
 }
 base {
     val archivesBaseName: String by project
