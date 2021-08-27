@@ -54,3 +54,21 @@ tasks {
         withSourcesJar()
     }
 }
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "com.github.PureOrigins"
+            artifactId = project.name
+            version = modVersion
+            
+            artifact(tasks.named("jar", Jar::class).get().archiveFile) {
+                builtBy(tasks["remapJar"])
+            }
+            
+            artifact(tasks["sourcesJar"]) {
+                builtBy(tasks["remapSourcesJar"])
+            }
+        }
+    }
+}
