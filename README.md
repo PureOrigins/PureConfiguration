@@ -1,4 +1,4 @@
-# Configuration
+# PureConfiguration
 
 Handle PureOrigins mod configuration files in JSON. Example usage
 ```kotlin
@@ -25,4 +25,24 @@ data class User(
     val name: String,
     val points: String
 )
+```
+
+## Gradle
+```kotlin
+plugins {
+    id("fabric-loom")
+    val kotlinVersion: String by System.getProperties()
+    kotlin("jvm").version(kotlinVersion)
+    kotlin("plugin.serialization").version(kotlinVersion)
+}
+
+repositories {
+    maven(url = "https://jitpack.io")
+}
+
+dependencies {
+    // [...]
+    val configurationVersion: String by project
+    modImplementation("com.github.PureOrigins:Configuration:$configurationVersion")
+}
 ```
