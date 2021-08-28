@@ -4,6 +4,7 @@ import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
 import net.fabricmc.loader.api.FabricLoader
 import java.io.FileNotFoundException
+import java.io.IOException
 import java.lang.Thread.currentThread
 import java.nio.file.Path
 import kotlin.io.path.*
@@ -17,13 +18,27 @@ val json = Json(compactJson) {
     prettyPrint = true
 }
 
+fun serializationException(file: Path, cause: SerializationException): Nothing = throw SerializationException("Cannot serialize file '$file'", cause)
+fun deserializationException(file: Path, cause: SerializationException): Nothing = throw SerializationException("Cannot deserialize file '$file' (update or delete it)", cause)
+fun ioException(file: Path, cause: IOException): Nothing = throw IOException("Cannot access file '$file'", cause)
+fun readException(file: Path, cause: Throwable): Nothing = when (cause) {
+    is SerializationException -> deserializationException(file, cause)
+    is IOException -> ioException(file, cause)
+    else -> throw IOException("Cannot read file '$file'", cause)
+}
+fun writeException(file: Path, cause: Throwable): Nothing = when (cause) {
+    is SerializationException -> serializationException(file, cause)
+    is IOException -> ioException(file, cause)
+    else -> throw IOException("Cannot write file '$file'", cause)
+}
+
 val configDir: Path get() = FabricLoader.getInstance().configDir
 val gameDir: Path get() = FabricLoader.getInstance().gameDir
 
 fun configFile(name: String): Path = configDir.resolve(name)
 fun gameFile(name: String): Path = gameDir.resolve(name)
 
-inline fun <reified T> Json.readFileAs(file: Path, deserializer: DeserializationStrategy<T> = serializersModule.serializer(), crossinline exceptionHandler: (Throwable) -> T): T {
+inline fun <reified T> Json.readFileAs(file: Path, deserializer: DeserializationStrategy<T> = serializersModule.serializer(), crossinline exceptionHandler: (Throwable) -> T = { readException(file, it) }): T {
     val text = try {
         file.readText()
     } catch (e: Throwable) {
@@ -41,16 +56,11 @@ inline fun <reified T> Json.readFileAs(
     file: Path,
     default: T,
     serializer: KSerializer<T> = serializersModule.serializer(),
-    crossinline exceptionHandler: (Throwable) -> T
+    crossinline writeExceptionHandler: (Throwable) -> Unit = { writeException(file, it) },
+    crossinline exceptionHandler: (Throwable) -> T = { readException(file, it) }
 ): T {
     return if (!file.exists()) {
-        try {
-            val text = encodeToString(serializer, default)
-            file.parent?.createDirectories()
-            file.writeText(text)
-        } catch (e: Throwable) {
-            return exceptionHandler(SerializationException("An error occurred while serializing $default", e))
-        }
+        writeFile(file, default, serializer, writeExceptionHandler)
         default
     } else {
         readFileAs(file, serializer, exceptionHandler)
@@ -62,7 +72,7 @@ inline fun <reified T> Json.readFileOrCopy(
     defaultPath: String,
     deserializer: DeserializationStrategy<T> = serializersModule.serializer(),
     classLoader: ClassLoader = currentThread().contextClassLoader,
-    crossinline exceptionHandler: (Throwable) -> T
+    crossinline exceptionHandler: (Throwable) -> T = { readException(file, it) }
 ): T {
     if (!file.exists()) {
         try {
@@ -81,7 +91,7 @@ inline fun <reified T> Json.writeFile(
     file: Path,
     content: T,
     serializer: SerializationStrategy<T> = serializersModule.serializer(),
-    crossinline exceptionHandler: (Throwable) -> Unit
+    crossinline exceptionHandler: (Throwable) -> Unit = { writeException(file, it) }
 ) {
     val text = try {
         encodeToString(serializer, content)
