@@ -1,4 +1,4 @@
-package com.github.pureorigins.configuration
+package it.pureorigins.framework.configuration
 
 import kotlinx.serialization.*
 import kotlinx.serialization.json.Json

@@ -1,17 +1,17 @@
 {
   "schemaVersion": 1,
-  "id": "configuration",
+  "id": "pureconfiguration",
   "version": "${version}",
-  "name": "Configuration",
+  "name": "PureConfiguration",
   "description": "Configuration utilities",
   "authors": ["AgeOfWar", "ekardnamm"],
   "contact": {
-    "homepage": "https://github.com/PureOrigins/Configuration",
-    "issues": "https://github.com/PureOrigins/Configuration/issues",
-    "sources": "https://github.com/PureOrigins/Configuration"
+    "homepage": "https://github.com/PureOrigins/PureConfiguration",
+    "issues": "https://github.com/PureOrigins/PureConfiguration/issues",
+    "sources": "https://github.com/PureOrigins/PureConfiguration"
   },
   "license": "GNU Lesser General Public License version 3 (LGPLv3)",
-  "icon": "assets/configuration/icon.png",
+  "icon": "assets/pureconfiguration/icon.png",
   "environment": "*",
   "depends": {
     "fabricloader": ">=0.11.6",

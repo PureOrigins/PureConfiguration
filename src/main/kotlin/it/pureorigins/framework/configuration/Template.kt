@@ -1,4 +1,4 @@
-package com.github.pureorigins.configuration
+package it.pureorigins.framework.configuration
 
 import freemarker.core.CommonMarkupOutputFormat
 import freemarker.core.CommonTemplateMarkupOutputModel
