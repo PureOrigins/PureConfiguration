@@ -36,12 +36,14 @@ fun String.template(args: Map<String, Any?>, locale: Locale = Locale.ROOT) = tem
 
 fun String.template(vararg args: Pair<String, Any?>, locale: Locale = Locale.ROOT) = template(args.toMap(), locale)
 
-fun String.templateText(args: Map<String, Any?>, locale: Locale = Locale.ROOT) = Text.Serializer.fromJson(
-    template(args) {
-        this.locale = locale
-        outputFormat = JsonOutputFormat
-    }
-)
+fun String.templateText(args: Map<String, Any?>, locale: Locale = Locale.ROOT): Text = if (startsWith('{') || startsWith('[')) {
+    Text.Serializer.fromJson(
+        template(args) {
+            this.locale = locale
+            outputFormat = JsonOutputFormat
+        }
+    )!!
+} else Text.of(template(args, locale))
 
 fun String.templateText(vararg args: Pair<String, Any?>, locale: Locale = Locale.ROOT) = templateText(args.toMap(), locale)
 
