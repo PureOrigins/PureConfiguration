@@ -57,7 +57,7 @@ private object JsonOutputFormat : CommonMarkupOutputFormat<TemplateJsonOutputMod
     override fun output(textToEsc: String, out: Writer) {
         textToEsc.forEach {
             when (it) {
-                '\\', '"', '{', '}', '[', ']', ',' -> out.write("\\$it")
+                '\\', '"' -> out.write("\\$it")
                 else -> out.write(it.code)
             }
         }
@@ -65,7 +65,7 @@ private object JsonOutputFormat : CommonMarkupOutputFormat<TemplateJsonOutputMod
     override fun escapePlainText(plainTextContent: String) = buildString {
         plainTextContent.forEach {
             when (it) {
-                '\\', '"', '{', '}', '[', ']', ',' -> append("\\$it")
+                '\\', '"' -> append("\\$it")
                 else -> append(it)
             }
         }
