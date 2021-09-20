@@ -42,7 +42,7 @@ repositories {
 
 dependencies {
     // [...]
-    val configurationVersion: String by project // latest version: 1.0.0
+    val configurationVersion: String by project // latest version: 1.0.1
     modImplementation("com.github.PureOrigins:PureConfiguration:$configurationVersion")
 }
 ```
