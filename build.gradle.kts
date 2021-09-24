@@ -3,6 +3,7 @@ plugins {
     val kotlinVersion: String by System.getProperties()
     kotlin("jvm").version(kotlinVersion)
     `maven-publish`
+    id("com.github.johnrengelman.shadow") version "7.0.0"
 }
 base {
     val archivesBaseName: String by project
@@ -14,6 +15,11 @@ val mavenGroup: String by project
 group = mavenGroup
 minecraft {}
 repositories {}
+val fat by configurations.creating {
+    configurations.modApi.get().extendsFrom(this)
+    exclude("org.jetbrains.kotlin")
+    exclude("org.jetbrains.kotlinx")
+}
 dependencies {
     val minecraftVersion: String by project
     minecraft("com.mojang:minecraft:$minecraftVersion")
@@ -26,8 +32,8 @@ dependencies {
     val fabricKotlinVersion: String by project
     modImplementation("net.fabricmc:fabric-language-kotlin:$fabricKotlinVersion")
     
-    implementation("org.freemarker:freemarker:2.3.31")
-    implementation("org.slf4j:slf4j-nop:1.7.30")
+    fat("org.freemarker:freemarker:2.3.31")
+    fat("org.slf4j:slf4j-nop:1.7.30")
 }
 tasks {
     val javaVersion = JavaVersion.VERSION_16
@@ -43,6 +49,11 @@ tasks {
         targetCompatibility = javaVersion.toString()
     }
     jar { from("LICENSE") { rename { "${it}_${base.archivesName}" } } }
+    shadowJar {
+        archiveClassifier.set("fat")
+        mergeServiceFiles()
+        configurations = listOf(fat)
+    }
     processResources {
         inputs.property("version", project.version)
         filesMatching("fabric.mod.json") { expand(mutableMapOf("version" to project.version)) }
