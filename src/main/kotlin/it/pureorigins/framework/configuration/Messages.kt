@@ -1,13 +1,12 @@
 package it.pureorigins.framework.configuration
 
 import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.server.command.CommandOutput
+import net.minecraft.server.command.ServerCommandSource
 import net.minecraft.text.Text
-import net.minecraft.util.Util.NIL_UUID
 
-fun CommandOutput.sendSystemMessage(text: Text?) {
+fun ServerCommandSource.sendFeedback(text: Text?) {
     if (text != null) {
-        sendSystemMessage(text, NIL_UUID)
+        sendFeedback(text, true)
     }
 }
 
