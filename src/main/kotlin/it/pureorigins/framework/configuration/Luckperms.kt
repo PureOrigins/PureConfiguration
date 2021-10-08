@@ -6,5 +6,5 @@ import net.minecraft.entity.player.PlayerEntity
 
 private val luckperms = LuckPermsProvider.get()
 
-internal fun PlayerEntity.hasPermission(name: String) = luckperms.getPlayerAdapter(PlayerEntity::class.java).getUser(this).cachedData.permissionData.checkPermission(name).asBoolean()
-internal fun CommandSource.hasPermission(name: String) = (this as? PlayerEntity)?.hasPermission(name) ?: true
+fun PlayerEntity.hasPermission(name: String) = luckperms.getPlayerAdapter(PlayerEntity::class.java).getUser(this).cachedData.permissionData.checkPermission(name).asBoolean()
+fun CommandSource.hasPermission(name: String) = (this as? PlayerEntity)?.hasPermission(name) ?: true
