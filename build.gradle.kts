@@ -31,6 +31,8 @@ dependencies {
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
     val fabricKotlinVersion: String by project
     modImplementation("net.fabricmc:fabric-language-kotlin:$fabricKotlinVersion")
+    val luckpermsVersion: String by project
+    compileOnly("net.luckperms:api:$luckpermsVersion")
     
     fat("org.freemarker:freemarker:2.3.31")
     fat("org.slf4j:slf4j-nop:1.7.30")
