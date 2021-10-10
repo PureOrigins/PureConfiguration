@@ -15,11 +15,6 @@ val mavenGroup: String by project
 group = mavenGroup
 minecraft {}
 repositories {}
-val fat by configurations.creating {
-    configurations.modApi.get().extendsFrom(this)
-    exclude("org.jetbrains.kotlin")
-    exclude("org.jetbrains.kotlinx")
-}
 dependencies {
     val minecraftVersion: String by project
     minecraft("com.mojang:minecraft:$minecraftVersion")
@@ -32,10 +27,9 @@ dependencies {
     val fabricKotlinVersion: String by project
     modImplementation("net.fabricmc:fabric-language-kotlin:$fabricKotlinVersion")
     val luckpermsVersion: String by project
-    compileOnly("net.luckperms:api:$luckpermsVersion")
-    
-    fat("org.freemarker:freemarker:2.3.31")
-    fat("org.slf4j:slf4j-nop:1.7.30")
+    modImplementation("net.luckperms:api:$luckpermsVersion")
+    val freemarkerVersion: String by project
+    modImplementation("org.freemarker:freemarker:$freemarkerVersion")
 }
 tasks {
     val javaVersion = JavaVersion.VERSION_16
@@ -52,9 +46,21 @@ tasks {
     }
     jar { from("LICENSE") { rename { "${it}_${base.archivesName}" } } }
     shadowJar {
-        archiveClassifier.set("fat")
+        dependencies {
+            include(dependency("org.freemarker:.*"))
+            exclude("/mappings/*")
+        }
+        archiveClassifier.set("fat-dev")
         mergeServiceFiles()
-        configurations = listOf(fat)
+    }
+    val remappedShadowJar by creating(net.fabricmc.loom.task.RemapJarTask::class) {
+        input.set(shadowJar.get().archiveFile)
+        addNestedDependencies.set(true)
+        archiveClassifier.set("fat")
+        dependsOn(shadowJar)
+    }
+    assemble {
+        dependsOn(remappedShadowJar)
     }
     processResources {
         inputs.property("version", project.version)
