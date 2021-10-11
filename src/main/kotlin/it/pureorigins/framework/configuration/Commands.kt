@@ -26,5 +26,5 @@ inline fun ArgumentBuilder<ServerCommandSource, *>.success(crossinline block: Co
 fun ArgumentBuilder<ServerCommandSource, *>.requiresPermission(name: String, orElsePermissionLevel: Int = 2) =
     requires(requirement.and { it.hasPermission(name, orElsePermissionLevel) })!!
 
-inline fun RequiredArgumentBuilder<ServerCommandSource, *>.suggests(crossinline block: CommandContext<ServerCommandSource>.() -> Iterable<String>) =
+inline fun RequiredArgumentBuilder<ServerCommandSource, *>.suggestions(crossinline block: CommandContext<ServerCommandSource>.() -> Iterable<String>) =
     suggests { context, builder -> CommandSource.suggestMatching(context.block(), builder) }!!
