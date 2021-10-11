@@ -7,6 +7,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
+import net.minecraft.command.CommandSource
 import net.minecraft.server.command.CommandManager
 import net.minecraft.server.command.ServerCommandSource
 
@@ -23,4 +24,7 @@ inline fun ArgumentBuilder<ServerCommandSource, *>.success(crossinline block: Co
     executes { block(it); SINGLE_SUCCESS }!!
 
 fun ArgumentBuilder<ServerCommandSource, *>.requiresPermission(name: String, orElsePermissionLevel: Int = 2) =
-    requires(requirement.and { it.hasPermission(name, orElsePermissionLevel) })
+    requires(requirement.and { it.hasPermission(name, orElsePermissionLevel) })!!
+
+inline fun RequiredArgumentBuilder<ServerCommandSource, *>.suggests(crossinline block: CommandContext<ServerCommandSource>.() -> Iterable<String>) =
+    suggests { context, builder -> CommandSource.suggestMatching(context.block(), builder) }!!
