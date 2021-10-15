@@ -3,21 +3,24 @@ package it.pureorigins.framework.configuration
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.server.command.ServerCommandSource
 import net.minecraft.text.Text
+import net.minecraft.text.Texts
 
 fun ServerCommandSource.sendFeedback(text: Text?) {
     if (text != null) {
-        sendFeedback(text, true)
+        sendFeedback(Texts.parse(this, text, entity, 0), true)
     }
 }
 
-fun PlayerEntity.sendChatMessage(text: Text?) {
+@JvmOverloads
+fun PlayerEntity.sendChatMessage(text: Text?, commandSource: ServerCommandSource? = null) {
     if (text != null) {
-        sendMessage(text, false)
+        sendMessage(Texts.parse(commandSource, text, null, 0), false)
     }
 }
 
-fun PlayerEntity.sendActionBar(text: Text?) {
+@JvmOverloads
+fun PlayerEntity.sendActionBar(text: Text?, commandSource: ServerCommandSource? = null) {
     if (text != null) {
-        sendMessage(text, true)
+        sendMessage(Texts.parse(commandSource, text, null, 0), true)
     }
 }
