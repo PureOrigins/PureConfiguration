@@ -3,6 +3,9 @@ package it.pureorigins.framework.configuration
 import freemarker.core.CommonMarkupOutputFormat
 import freemarker.core.CommonTemplateMarkupOutputModel
 import freemarker.template.*
+import freemarker.template.utility.DeepUnwrap
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.serializer
 import net.minecraft.text.Text
 import java.io.StringWriter
 import java.io.Writer
@@ -21,6 +24,8 @@ private fun String.template(args: Map<String, Any?>, configuration: Configuratio
         objectWrapper = ObjectWrapper
         outputEncoding = "utf8"
         isAPIBuiltinEnabled = true
+        setSharedVariable("json", JsonTemplateMethodModel)
+        setSharedVariable("plain", PlainTemplateMethodModel)
         setSharedVariable("unicode", UnicodeTemplateMethodModel)
         setSharedVariable("random", Random)
         configuration()
@@ -54,7 +59,7 @@ private class TemplateJsonOutputModel(plainTextContent: String?, markupContent: 
 }
 
 private object JsonOutputFormat : CommonMarkupOutputFormat<TemplateJsonOutputModel>() {
-    override fun getName() = "Markdown"
+    override fun getName() = "JSON"
     override fun getMimeType() = null
     override fun output(textToEsc: String, out: Writer) {
         textToEsc.forEach {
@@ -80,6 +85,30 @@ private object UnicodeTemplateMethodModel : TemplateMethodModelEx {
     override fun exec(args: MutableList<Any?>): Any {
         if (args.size != 1) throw TemplateModelException("Wrong arguments")
         return SimpleScalar((args[0] as SimpleNumber).asNumber.toChar().toString())
+    }
+}
+
+private object JsonTemplateMethodModel : TemplateMethodModelEx {
+    @ExperimentalSerializationApi
+    override fun exec(args: MutableList<Any?>): Any {
+        if (args.size != 1) throw TemplateModelException("Wrong arguments")
+        val arg: Any = DeepUnwrap.unwrap(args[0] as TemplateModel) ?: return SimpleScalar("null")
+        return when (arg) {
+            is Text -> SimpleScalar(Text.Serializer.toJson(arg))
+            else -> SimpleScalar(json.encodeToString(json.serializersModule.serializer(arg.javaClass), arg))
+        }
+    }
+}
+
+private object PlainTemplateMethodModel : TemplateMethodModelEx {
+    @ExperimentalSerializationApi
+    override fun exec(args: MutableList<Any?>): Any {
+        if (args.size != 1) throw TemplateModelException("Wrong arguments")
+        val arg: Any = DeepUnwrap.unwrap(args[0] as TemplateModel) ?: return SimpleScalar("null")
+        return when (arg) {
+            is Text -> SimpleScalar(arg.asString())
+            else -> SimpleScalar(arg.toString())
+        }
     }
 }
 
