@@ -12,6 +12,13 @@ fun ServerCommandSource.sendFeedback(text: Text?) {
 }
 
 @JvmOverloads
+fun PlayerEntity.sendFeedback(text: Text?, commandSource: ServerCommandSource? = null) {
+    if (text != null) {
+        this.commandSource.sendFeedback(Texts.parse(commandSource, text, null, 0), false)
+    }
+}
+
+@JvmOverloads
 fun PlayerEntity.sendChatMessage(text: Text?, commandSource: ServerCommandSource? = null) {
     if (text != null) {
         sendMessage(Texts.parse(commandSource, text, null, 0), false)
