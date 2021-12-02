@@ -17,7 +17,7 @@
     "fabricloader": ">=0.11.6",
     "fabric": "*",
     "fabric-language-kotlin": ">=1.6.3+kotlin.1.5.21",
-    "minecraft": "1.17.x",
+    "minecraft": ">=1.17.1",
     "java": ">=16",
     "luckperms": "^5.3"
   }
