@@ -89,7 +89,6 @@ private object UnicodeTemplateMethodModel : TemplateMethodModelEx {
 }
 
 private object JsonTemplateMethodModel : TemplateMethodModelEx {
-    @ExperimentalSerializationApi
     override fun exec(args: MutableList<Any?>): Any {
         if (args.size != 1) throw TemplateModelException("Wrong arguments")
         val arg: Any = DeepUnwrap.unwrap(args[0] as TemplateModel) ?: return SimpleScalar("null")
@@ -101,7 +100,6 @@ private object JsonTemplateMethodModel : TemplateMethodModelEx {
 }
 
 private object PlainTemplateMethodModel : TemplateMethodModelEx {
-    @ExperimentalSerializationApi
     override fun exec(args: MutableList<Any?>): Any {
         if (args.size != 1) throw TemplateModelException("Wrong arguments")
         val arg: Any = DeepUnwrap.unwrap(args[0] as TemplateModel) ?: return SimpleScalar("null")
